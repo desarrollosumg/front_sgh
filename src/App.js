@@ -1,10 +1,13 @@
-
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import Home from "./routes/login";
 
 function App() {
   return (
-    <div className='w-screen h-screen bg-blue-200 flex justify-center items-center'>
-      <p>SGH</p>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </Router>
   );
 }
 
