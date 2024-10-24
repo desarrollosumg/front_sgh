@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+/*import React, { useState } from "react";
 import { FaUser } from "react-icons/fa6";
 import { TbPasswordUser } from "react-icons/tb";
 import { IoEye, IoEyeOff } from "react-icons/io5";
@@ -12,7 +12,7 @@ const Home = () => {
   const [clave, setClave] = useState("");
   const [esVisibleClave, setEsVisibleClave] = useState(false);
 
-  const handleGetUser = async () => {/*
+  const handleGetUser = async () => {
     try {
       const response = await axios.get(
         `http://localhost:8081/rrhh/usuario/obtener?nombreUsuario=${nombreusuario}`
@@ -60,7 +60,7 @@ const Home = () => {
           "Por favor, inténtelo nuevamente. Si el problema persiste, contacte a su administrador.",
       });
     }
-  */};
+  };
 
   return (
     <>
@@ -132,3 +132,4 @@ const Home = () => {
 };
 
 export default Home;
+*/
