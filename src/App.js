@@ -5,6 +5,7 @@ import Home from "./routes/Home"; // Ruta principal
 import User from "./routes/User"; // Lista de usuarios
 import CreateUser from "./routes/CreateUser"; // Crear usuario
 import EditUser from "./routes/EditUser"; // Editar usuario
+import Cita from "./routes/Cita";
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 <Route path="/user" element={<User />} /> {/* Lista de usuarios */}
                 <Route path="/crearusuario" element={<CreateUser />} /> {/* Crear usuario */}
                 <Route path="/EditUser/:id" element={<EditUser />} /> {/* Ruta dinámica */}
+                <Route path="/cita" element={<Cita/>}/>
             </Routes>
         </Router>
     );
