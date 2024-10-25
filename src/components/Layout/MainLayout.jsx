@@ -1,9 +1,13 @@
 // src/components/Layout/MainLayout.jsx
 import React, { useState } from 'react';
-import { AiOutlineCalendar, AiOutlineEye } from 'react-icons/ai'; // Importar iconos
+import { AiOutlineCalendar, AiOutlineEye } from 'react-icons/ai'; // Iconos para citas
+import { Tooltip } from 'react-tooltip';
+import { Link } from 'react-router-dom';
+import { FaUserMd } from 'react-icons/fa';
+import { IoIosExit } from 'react-icons/io';
 import './MainLayout.css';
 
-const MainLayout = ({ children }) => {
+export const MainLayout = ({ children }) => {
   const [activeContent, setActiveContent] = useState(''); // Controla el contenido de la segunda sidebar
   const [isSecondSidebarOpen, setIsSecondSidebarOpen] = useState(false); // Controla la visibilidad de la segunda sidebar
 
@@ -15,6 +19,21 @@ const MainLayout = ({ children }) => {
   const handleCloseSecondSidebar = () => {
     setIsSecondSidebarOpen(false);
   };
+
+  const modules = [
+    {
+      id: 1,
+      icon: <FaUserMd />,
+      slug: '/user',
+      name: 'Usuarios'
+    },
+    {
+      id: 2,
+      icon: <IoIosExit />,
+      slug: '/',
+      name: 'Cerrar Sesión'
+    }
+  ];
 
   return (
     <div className="layout">
@@ -43,6 +62,22 @@ const MainLayout = ({ children }) => {
             </li>
           </ul>
         </nav>
+
+        {/* Módulos con iconos */}
+        <div className="modules">
+          {modules.map((module) => (
+            <Link key={module.id} to={module.slug}>
+              <div
+                className="module-icon"
+                data-tooltip-id={`module_${module.id}`}
+                data-tooltip-content={module.name}
+              >
+                {module.icon}
+              </div>
+              <Tooltip id={`module_${module.id}`} />
+            </Link>
+          ))}
+        </div>
       </aside>
 
       {/* Segunda Sidebar Desplegable */}
@@ -57,19 +92,4 @@ const MainLayout = ({ children }) => {
               <p>Aquí puedes programar una nueva cita.</p>
             </div>
           )}
-          {activeContent === 'ver' && (
-            <div>
-              <h3>Ver Citas</h3>
-              <p>Aquí puedes ver todas las citas programadas.</p>
-            </div>
-          )}
-        </div>
-      </aside>
-
-      {/* Área de Contenido Principal */}
-      <main className="content">{children}</main>
-    </div>
-  );
-};
-
-export default MainLayout;
+  
