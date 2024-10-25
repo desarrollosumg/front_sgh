@@ -1,24 +1,23 @@
-// App.js
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./routes/Home"; // Ruta principal
-import User from "./routes/User"; // Lista de usuarios
-import CreateUser from "./routes/CreateUser"; // Crear usuario
-import EditUser from "./routes/EditUser"; // Editar usuario
+import User from "./routes/User";
+import CreateUser from "./routes/CreateUser";
+import EditUser from "./routes/EditUser";
 import Cita from "./routes/Cita";
+import Home from "./routes/login";
 
 function App() {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/" element={<Home />} /> {/* Página principal */}
-                <Route path="/user" element={<User />} /> {/* Lista de usuarios */}
-                <Route path="/crearusuario" element={<CreateUser />} /> {/* Crear usuario */}
-                <Route path="/EditUser/:id" element={<EditUser />} /> {/* Ruta dinámica */}
-                <Route path="/cita" element={<Cita/>}/>
-            </Routes>
-        </Router>
-    );
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/usuario" element={<User />} />
+        <Route path="/crear_usuario" element={<CreateUser />} />
+        <Route path="/editar_usarios/:id" element={<EditUser />} />
+        <Route path="/cita" element={<Cita />} />
+      </Routes>
+    </Router>
+  );
 }
 
 export default App;

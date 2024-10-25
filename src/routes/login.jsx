@@ -1,25 +1,42 @@
-/*import React, { useState } from "react";
+import React, { useState } from "react";
 import { FaUser } from "react-icons/fa6";
 import { TbPasswordUser } from "react-icons/tb";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import { notification } from "antd";
-//import axios from "axios";
-//import SHA256 from "crypto-js/sha256"; // Importamos SHA256 para encriptar la clave en el login
+import axios from "axios";
+import bcrypt from "bcryptjs";
+import { useNavigate } from "react-router-dom";
+
+//--------------------------------------------------------------------------------------------------------//
+/**
+ * Valida si una contraseña es correcta
+ * @param {string} password // Clave a comparar
+ * @param {string} hashedPassword // Hash de la clave guardada
+ * @returns {boolean}
+ */
+export const validatePassword = (clave, hashedPassword) => {
+  return bcrypt.compareSync(clave, hashedPassword);
+};
 
 const Home = () => {
   const [api, contextHolder] = notification.useNotification();
-  const [nombreusuario, setNombreUsuario] = useState("");
-  const [clave, setClave] = useState("");
-  const [esVisibleClave, setEsVisibleClave] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPasword, setShowPassword] = useState(false);
+  const BaseAPiUrl = process.env.REACT_APP_API_BASE_URL;
+  const navigate = useNavigate();
 
   const handleGetUser = async () => {
     try {
-      const response = await axios.get(
-        `http://localhost:8081/rrhh/usuario/obtener?nombreUsuario=${nombreusuario}`
+      // Listamos el usuario segun correo
+      const userInfoResponse = await axios.get(
+        `${BaseAPiUrl}/usuario/obtener?correo=${email}`
       );
+      const userInfo = userInfoResponse.data || {};
 
-      // Verificamos si existe el usuario
-      if (!response.data) {
+      const isValidPassword = validatePassword(password, userInfo?.clave || "");
+
+      if (!userInfo || !isValidPassword) {
         api.warning({
           message: "Ocurrió un error al iniciar sesión",
           description: "El usuario o contraseña son incorrectos",
@@ -27,31 +44,18 @@ const Home = () => {
         return;
       }
 
-      const userInfo = response.data;
-
-      // Encriptar la clave ingresada por el usuario con SHA-256
-      const claveIngresadaEncriptada = SHA256(clave).toString();
-
-      // Comparar la clave encriptada del usuario con la que está en la base de datos
-      const claveEncriptadaBD = userInfo?.clave || "";
-      if (claveIngresadaEncriptada !== claveEncriptadaBD) {
+      if(userInfo.activo === 0){
         api.warning({
-          message: "Ocurrió un error al iniciar sesión",
-          description: "El usuario o contraseña son incorrectos",
+          message: "El usuario no se encuentra activo.",
+          description: ""
         });
         return;
       }
 
-      // Guardamos el ID y nombre de usuario en localStorage
-      localStorage.setItem("idUsuario", userInfo.id);
-      localStorage.setItem("nombreUsuario", userInfo.nombreUsuario);
+      localStorage.setItem("userId", userInfo.id);
+      localStorage.setItem("nombre_usuario", userInfo.nombre_usuario);
 
-      // Guardar fecha de expiración de la sesión
-      const tiempoExpiracion = new Date().getTime() + 8 * 60 * 60 * 1000;
-      localStorage.setItem("expiracionSesion", tiempoExpiracion);
-
-      // Redirigimos al usuario
-      window.location.href = "/empleado";
+      navigate(`/citas`);
     } catch (error) {
       console.error("Error al obtener el usuario:", error);
       api.error({
@@ -78,10 +82,10 @@ const Home = () => {
               <input
                 type="text"
                 className="w-full py-1 px-2 rounded-3xl border border-white bg-inherit outline-none text-white"
-                placeholder="Usuario"
-                value={nombreusuario}
+                placeholder="Correo"
+                value={email}
                 onChange={(event) => {
-                  setNombreUsuario(event.target.value);
+                  setEmail(event.target.value);
                 }}
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -90,28 +94,28 @@ const Home = () => {
             </div>
             <div className="relative mt-3 md:mt-5">
               <input
-                type={esVisibleClave ? "text" : "password"}
+                type={showPasword ? "text" : "password"}
                 className="w-full py-1 px-2 rounded-3xl border border-white bg-inherit outline-none text-white"
                 placeholder="Clave"
-                value={clave}
+                value={password}
                 onChange={(event) => {
-                  const valor = event.target.value;
-                  setClave(valor);
-                  if (valor === "") setEsVisibleClave(false);
+                  const value = event.target.value;
+                  setPassword(value);
+                  if (value === "") setShowPassword(false);
                 }}
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
-                {clave === "" && <TbPasswordUser className="text-white" />}
-                {clave !== "" && !esVisibleClave && (
+                {!password && <TbPasswordUser className="text-white" />}
+                {!!password && !showPasword && (
                   <IoEye
                     className="text-white"
-                    onClick={() => setEsVisibleClave(true)}
+                    onClick={() => setShowPassword(true)}
                   />
                 )}
-                {clave !== "" && esVisibleClave && (
+                {!!password && showPasword && (
                   <IoEyeOff
                     className="text-white"
-                    onClick={() => setEsVisibleClave(false)}
+                    onClick={() => setShowPassword(false)}
                   />
                 )}
               </div>
@@ -132,4 +136,3 @@ const Home = () => {
 };
 
 export default Home;
-*/
