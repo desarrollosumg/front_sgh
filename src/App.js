@@ -11,7 +11,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/usuario" element={<User />} />
+        <Route path="/usuarios" element={<User />} />
         <Route path="/crear_usuario" element={<CreateUser />} />
         <Route path="/editar_usarios/:id" element={<EditUser />} />
         <Route path="/cita" element={<Cita />} />
