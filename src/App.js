@@ -4,6 +4,7 @@ import User from "./routes/User";
 import CreateUser from "./routes/CreateUser";
 import EditUser from "./routes/EditUser";
 import Cita from "./routes/Cita";
+import ListaCitas from "./routes/ListaCitas";
 import Home from "./routes/login";
 import PersonalMedico from "./routes/PersonalMedico";  
 import AgregarPersonalMedico from "./routes/AgregarPersonalMedico";  
@@ -22,6 +23,8 @@ function App() {
         <Route path="/crear_usuario" element={<CreateUser />} />
         <Route path="/editar_usarios/:id" element={<EditUser />} />
         <Route path="/cita" element={<Cita />} />
+        <Route path="/citas" element={<ListaCitas/>} />
+        <Route path="/paciente" element={<Paciente />} />
         <Route path="/PersonalMedico" element={<PersonalMedico />} /> 
         <Route path="/AgregarPersonalMedico" element={<AgregarPersonalMedico />} /> 
         <Route path="/EditarPersonalMedico/:id" element={<EditarPersonalMedico />} /> 
