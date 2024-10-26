@@ -5,10 +5,13 @@ import CreateUser from "./routes/CreateUser";
 import EditUser from "./routes/EditUser";
 import Cita from "./routes/Cita";
 import Home from "./routes/login";
-import Paciente from "./routes/Paciente";
 import PersonalMedico from "./routes/PersonalMedico";  
 import AgregarPersonalMedico from "./routes/AgregarPersonalMedico";  
 import EditarPersonalMedico from "./routes/EditarPersonalMedico"; 
+import Paciente from "./routes/Paciente";
+import CrearPaciente from "./routes/CrearPaciente";
+import EditarPaciente from "./routes/EditarPaciente";
+import Bitacora from "./routes/bitacora";
 
 function App() {
   return (
@@ -19,10 +22,13 @@ function App() {
         <Route path="/crear_usuario" element={<CreateUser />} />
         <Route path="/editar_usarios/:id" element={<EditUser />} />
         <Route path="/cita" element={<Cita />} />
-        <Route path="/paciente" element={<Paciente />} />
         <Route path="/PersonalMedico" element={<PersonalMedico />} /> 
         <Route path="/AgregarPersonalMedico" element={<AgregarPersonalMedico />} /> 
         <Route path="/EditarPersonalMedico/:id" element={<EditarPersonalMedico />} /> 
+        <Route path="/paciente" element={<Paciente/>}/>
+        <Route path="/nuevopaciente" element={<CrearPaciente/>}/>
+        <Route path="/editarpaciente/:id" element={<EditarPaciente/>}/>
+        <Route path="/bitacora" element={<Bitacora/>}/>
       </Routes>
     </Router>
   );

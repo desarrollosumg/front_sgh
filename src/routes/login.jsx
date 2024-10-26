@@ -55,7 +55,7 @@ const Home = () => {
       localStorage.setItem("userId", userInfo.id);
       localStorage.setItem("nombre_usuario", userInfo.nombre_usuario);
 
-      navigate(`/citas`);
+      navigate(`/cita`);
     } catch (error) {
       console.error("Error al obtener el usuario:", error);
       api.error({
