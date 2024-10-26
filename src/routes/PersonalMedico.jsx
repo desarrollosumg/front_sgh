@@ -5,17 +5,15 @@ import { useNavigate } from 'react-router-dom';
 
 const PersonalMedico = () => {
     const [personalMedico, setPersonalMedico] = useState([]);
-    const [departamentos, setDepartamentos] = useState([]); // Estado para los departamentos
+    const [departamentos, setDepartamentos] = useState([]); 
     const [especialidades, setEspecialidades] = useState([]);
     const [loading, setLoading] = useState(true);
-    
+    const url = process.env.REACT_APP_API_BASE_URL;
 
     useEffect(() => {
-        // Obtener personal médico
-        axios.get('http://localhost:8081/sgh/PersonalMedico')
+        axios.get(`${url}/PersonalMedico`)
         .then(response => {
-            console.log(response.data); // Verifica la respuesta aquí
-            setPersonalMedico(response.data); // Almacena todos los registros de personal médico
+            setPersonalMedico(response.data); 
             setLoading(false);
         })
         .catch(error => {
@@ -23,19 +21,17 @@ const PersonalMedico = () => {
             setLoading(false);
         });
 
-        // Obtener departamentos
-        axios.get('http://localhost:8081/sgh/departamento')
+        axios.get(`${url}/departamento`)
             .then(response => {
                 setDepartamentos(response.data);
             })
             .catch(error => {
                 console.error("Error fetching departamentos:", error);
             });
-        
-        // Llama a la API para obtener las especialidades
-        axios.get('http://localhost:8081/sgh/especialidad')
+         
+        axios.get(`${url}/especialidad`)
         .then(response => {
-            setEspecialidades(response.data); // Almacena las especialidades en el estado
+            setEspecialidades(response.data); 
         })
         .catch(error => {
             console.error("Error fetching especialidades:", error);
@@ -44,21 +40,18 @@ const PersonalMedico = () => {
     }, []);
 
     const manejarClickEditar = (id) => {
-        navigate(`/editarPersonalMedico/${id}`); // Redirige a la ruta de edición
+        navigate(`/editarPersonalMedico/${id}`); 
     };
-    // Función para obtener el nombre del departamento basado en su ID
+ 
     const obtenerNombreDepartamento = (departamentoId) => {
         const departamento = departamentos.find(depto => depto.id === departamentoId);
         return departamento ? departamento.nombre : 'No asignado';
     };
 
-       // Función para obtener el nombre del especialidad basado en su ID
     const obtenerNombreEspecialidad = (especialidadId) => {
         const especialidad  = especialidades.find(e => e.id === especialidadId);
         return especialidad ? especialidad.nombre : 'No asignado';
     };
-
- 
 
     const obtenerEstado = (estado) => {
         return estado === 1 ? (
@@ -70,8 +63,7 @@ const PersonalMedico = () => {
 
     const navigate = useNavigate();
     const manejarClick = () => {
-        // Redirigir a la ruta deseada
-        navigate('/agregarPersonalMedico'); // Cambia '/ruta-deseada' por la ruta a la que quieras dirigir
+        navigate('/agregarPersonalMedico'); 
       };
 
     return (
@@ -135,7 +127,7 @@ const PersonalMedico = () => {
                                     <td style={{ padding: "10px", border: "1px solid #ddd" }}>{obtenerEstado(medico.estado)}</td>
                                     <td style={{ padding: "10px", border: "1px solid #ddd" }}>
                                         <button 
-                                            onClick={() => manejarClickEditar(medico.id)} // Llama a la función para editar
+                                            onClick={() => manejarClickEditar(medico.id)} 
                                             style={{ backgroundColor: "#6482AD", color: "#fff", border: "none", borderRadius: "4px", padding: "5px 10px", cursor: "pointer", fontSize: "14px" }}>
                                             Editar
                                         </button>

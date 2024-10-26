@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const EditarPersonalMedico = () => {
     const { id } = useParams();
@@ -9,18 +10,21 @@ const EditarPersonalMedico = () => {
     const navigate = useNavigate();
     const [departamentos, setDepartamentos] = useState([]);
     const [especialidades, setEspecialidades] = useState([]);
+    const [usuarioId, setUsuarioId]= useState();
+    const url = process.env.REACT_APP_API_BASE_URL;
 
     const handleRedirect = () => {
         navigate('/PersonalMedico');
     };
 
     useEffect(() => {
+        setUsuarioId(localStorage.getItem(`userId`))
         const cargarDatos = async () => {
             try {
                 const [medicoResponse, departamentosResponse, especialidadesResponse] = await Promise.all([
-                    axios.get(`http://localhost:8081/sgh/PersonalMedico/${id}`),
-                    axios.get('http://localhost:8081/sgh/departamento'),
-                    axios.get('http://localhost:8081/sgh/especialidad'),
+                    axios.get(`${url}/PersonalMedico/${id}`),
+                    axios.get(`${url}/departamento`),
+                    axios.get(`${url}/especialidad`),
                 ]);
 
                 setMedico(medicoResponse.data);
@@ -38,6 +42,10 @@ const EditarPersonalMedico = () => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if ((name === 'nombre' || name === 'apellido') && /\d/.test(value)) {
+            return; // No se actualiza el estado si hay números
+        }
+
         setMedico((prevMedico) => ({
             ...prevMedico,
             [name]: value,
@@ -46,15 +54,40 @@ const EditarPersonalMedico = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const correoRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        if (!correoRegex.test(medico.correo)) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Correo inválido',
+                text: 'Por favor ingresa un correo válido.',
+            });
+            return;
+        }
+
+        if (medico.telefono.length !== 8) {
+            await Swal.fire({
+                icon: 'error',
+                title: 'Teléfono inválido',
+                text: 'El teléfono debe contener exactamente 8 dígitos.',
+            });
+            return;
+        }
+
         try {
-            await axios.put(`http://localhost:8081/sgh/PersonalMedico/${id}`, {
+            await axios.put(`${url}/PersonalMedico/${id}`, {
                 ...medico,
-                usuarioModificacion: 1,
+                usuarioModificacion: usuarioId,
                 fechaModificacion: new Date().toISOString(),
             });
-
+            await Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: 'Actualizado con éxito!',
+            });
             await registrarBitacora();
-            navigate('/personalMedico');
+
+            navigate('/PersonalMedico');
         } catch (error) {
             console.error("Error updating medico:", error);
         }
@@ -65,15 +98,13 @@ const EditarPersonalMedico = () => {
         const bitacoraData = {
             accion: "UPDATE",
             descripcion: "Actualización de personal médico",
-            modulo: 1,
-            usuario: 1,
-            ip: "192.168.0.1",
+            modulo: 4,
+            usuario: usuarioId,
             fecha: fechaActual
         };
 
         try {
-            await axios.post('http://localhost:8081/sgh/bitacora', bitacoraData);
-            console.log('Registro en bitácora insertado correctamente');
+            await axios.post(`${url}/bitacora`, bitacoraData);
         } catch (error) {
             console.error('Error al registrar en bitácora', error);
         }

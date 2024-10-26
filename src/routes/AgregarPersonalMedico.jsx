@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const InsertarPersonalMedico = () => {
   const [formData, setFormData] = useState({
@@ -16,60 +17,28 @@ const InsertarPersonalMedico = () => {
     estado: 0
   });
 
+  const url = process.env.REACT_APP_API_BASE_URL;
   const [departamentos, setDepartamentos] = useState([]); 
   const [especialidades, setEspecialidades] = useState([]); 
-  const [loading, setLoading] = useState(true);
+  const [usuarioId, setUsuarioId]= useState();
   const navigate = useNavigate();
   const handleRedirect = () => {
-    navigate('/PersonalMedico'); // Redirige a la ruta 'PersonalMedico'
+    navigate('/PersonalMedico'); 
 };
 
-  // Función para cargar los departamentos
-  const cargarDepartamentos = async () => {
-    try {
-      const response = await axios.get('http://localhost:8081/sgh/Departamentos');
-      setDepartamentos(response.data);
-    } catch (error) {
-      console.error('Error al cargar los departamentos', error);
-    }
-    
-  };
-
-  // Función para cargar las especialidades
-  const cargarEspecialidades = async () => {
-    try {
-      const response = await axios.get('http://localhost:8081/sgh/Especialidades');
-      setEspecialidades(response.data);
-    } catch (error) {
-      console.error('Error al cargar las especialidades', error);
-    }
-  };
 
   useEffect(() => {
-    // Obtener personal médico activo
-    axios.get('http://localhost:8081/sgh/PersonalMedico')
+    setUsuarioId(localStorage.getItem(`userId`))
+    axios.get(`${url}/departamento`)
       .then(response => {
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error("Error fetching personal medico:", error);
-        setLoading(false);
-      });
-
-    // Obtener departamentos
-    axios.get('http://localhost:8081/sgh/departamento')
-      .then(response => {
-        console.log("Departamentos:", response.data);  // Verificar si llegan los datos
         setDepartamentos(response.data);
       })
       .catch(error => {
         console.error("Error fetching departamentos:", error);
       });
 
-    // Obtener especialidades
-    axios.get('http://localhost:8081/sgh/especialidad')
+    axios.get(`${url}/especialidad`)
       .then(response => {
-        console.log("Especialidades:", response.data);  // Verificar si llegan los datos
         setEspecialidades(response.data);
       })
       .catch(error => {
@@ -80,58 +49,101 @@ const InsertarPersonalMedico = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
+    if (name === "nombre" || name === "apellido") {
+      const regex = /^[A-Za-záéíóúÁÉÍÓÚñÑ\s]*$/;
+      if (!regex.test(value)) return;
+    }
+    
+    if (name === "telefono") {
+      const regex = /^[0-9]{0,8}$/;
+      if (!regex.test(value)) return;
+    }
+  
+    if (name === "correo") {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+      return;
+    }
+  
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const insertarPersonalMedico = async () => {
-    const fechaActual = new Date().toISOString(); // Fecha actual del sistema en formato ISO
+    const fechaActual = new Date().toISOString(); 
 
     const nuevoPersonalMedico = {
       ...formData,
-      usuarioCreacion: 1,  // Valor quemado
-      fechaCreacion: fechaActual,  // Fecha actual
-      usuarioModificacion: 1,  // Valor quemado
-      fechaModificacion: fechaActual,  // Fecha actual
+      usuarioCreacion: usuarioId,  
+      fechaCreacion: fechaActual,  
+      usuarioModificacion: usuarioId,  
+      fechaModificacion: fechaActual,  
     };
 
+    if (formData.telefono.length !== 8) {
+      await Swal.fire({
+        icon: 'error',
+        title: 'Teléfono inválido',
+        text: 'El teléfono debe contener exactamente 8 dígitos.',
+      });
+      return;
+    }
+    const correoRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    if (!correoRegex.test(formData.correo)) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Correo inválido',
+        text: 'Por favor ingresa un correo válido.',
+      });
+      return;
+    }
+
     try {
-      const response = await axios.post('http://localhost:8081/sgh/PersonalMedico', nuevoPersonalMedico);
+      const response = await axios.post(`${url}/PersonalMedico`, nuevoPersonalMedico);
       if (response.status === 201) {
-        alert('Personal médico insertado correctamente');
+        await Swal.fire({
+          icon: 'success',
+          title: '¡Éxito!',
+          text: 'Personal Medico registrado con éxito!',
+      });
+      await registrarBitacora();
+      navigate('/PersonalMedico'); 
       }
     } catch (error) {
-      console.error('Error al insertar el personal médico', error);
-      alert('Error al insertar el personal médico');
+      await Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Hubo un error al registrar el Personal Medico. Inténtalo nuevamente.',
+    });
     }
   };
 
   const registrarBitacora = async () => {
-    const fechaActual = new Date().toISOString(); // Fecha actual del sistema en formato ISO
+    const fechaActual = new Date().toISOString();
     const bitacoraData = {
-      accion: "INSERT",
-      descripcion: "Creación de personal medico",
-      modulo: 1,
-      usuario: 1,
-      ip: "192.168.0.1",
-      fecha: fechaActual
+        accion: "INSERT",
+        descripcion: "Se agrego un nuevo registro de personal médico",
+        modulo: 4,
+        usuario: usuarioId,
+        fecha: fechaActual
     };
 
     try {
-      await axios.post('http://localhost:8081/sgh/bitacora', bitacoraData);
-      console.log('Registro en bitácora insertado correctamente');
+        await axios.post(`${url}/bitacora`, bitacoraData);
     } catch (error) {
-      console.error('Error al registrar en bitácora', error);
+        console.error('Error al registrar en bitácora', error);
     }
-  };
+};
 
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Insertar Personal Médico</h2>
       <form onSubmit={(e) => { e.preventDefault(); insertarPersonalMedico(); }} style={styles.form}>
-        {/* Primera sección del formulario */}
         <h3>Información Personal</h3>
         <div style={styles.columnsContainer}>
           <div style={styles.column}>
@@ -210,7 +222,6 @@ const InsertarPersonalMedico = () => {
           </div>
         </div>
 
-        {/* Segunda sección del formulario */}
         <h3>Detalles del Trabajo</h3>
         <div style={styles.columnsContainer}>
           <div style={styles.column}>
@@ -285,7 +296,6 @@ const InsertarPersonalMedico = () => {
   );
 };
 
-// Estilos CSS-in-JS
 const styles = {
   container: {
     display: 'flex',
@@ -338,20 +348,20 @@ const styles = {
   columnsContainer: {
     display: 'flex',
     justifyContent: 'space-between',
-    gap: '20px', // Espacio entre columnas
+    gap: '20px', 
   },
   column: {
-    width: '48%', // Para que cada columna ocupe el 48% del ancho, dejando espacio entre ellas
+    width: '48%', 
 },
 buttonRed: {
   padding: '6px 12px',
   borderRadius: '4px',
-  backgroundColor: '#ff4d4d', // Color rojo
+  backgroundColor: '#ff4d4d', 
   color: '#fff',
   border: 'none',
   cursor: 'pointer',
   fontSize: '16px',
-  marginTop: '20px', // Espacio superior
+  marginTop: '20px', 
 },
 };
 
