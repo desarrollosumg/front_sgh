@@ -94,7 +94,7 @@ export const Bitacora = () => {
         }
     }, [bitacora,modulo,usuario]);
     
-    const formatearFecha = (fecha) => {
+    const formatearFecha = (fecha) => { 
         const nuevaFecha = new Date(fecha);
         return nuevaFecha.toLocaleDateString();
     };

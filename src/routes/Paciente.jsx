@@ -6,7 +6,7 @@ import { MainLayout } from "../components/Layout/MainLayout";
 export const Paciente = () => {
     const [paciente, setPaciente] = useState([]);
     const url = process.env.REACT_APP_API_BASE_URL;
-
+ 
     const [currentPage, setCurrentPage] = useState(1);
     const [pacientesPorPagina] = useState(10);
     const indexOfLastPaciente = currentPage * pacientesPorPagina;
