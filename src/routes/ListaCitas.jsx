@@ -3,6 +3,7 @@ import { Calendar, User, CalendarPlus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { MainLayout } from "../components/Layout/MainLayout";
 
 const ListaCitas = () => {
   const [doctores, setDoctores] = useState([]);
@@ -210,11 +211,13 @@ const ListaCitas = () => {
       );
       await registrarBitacora();
       await registrarBitacorah();
-      Swal.fire(
-        "Terminada",
-        "La cita ha sido finalizada y el historial médico ha sido guardado.",
-        "success"
-      );
+      Swal.fire({
+        position: "top-center",
+        icon: "success",
+        title: "La cita ha sido finalizada",
+        showConfirmButton: false,
+        timer: 1500
+      });
 
       setIsModalOpen(false);
       setIsCompleteModalOpen(false);
@@ -228,6 +231,7 @@ const ListaCitas = () => {
   };
 
   return (
+    <MainLayout>
     <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="bg-white rounded-lg shadow-lg p-6 relative">
         <div className="flex justify-between items-center mb-6">
@@ -398,7 +402,7 @@ const ListaCitas = () => {
                   >
                     <option value="">Cita Confirmada</option>
                     <option value="cancelar">Cancelar Cita</option>
-                    <option value="terminar">Terminar Cita</option>
+                    <option value="terminar">Atender Cita</option>
                   </select>
                 </div>
 
@@ -499,6 +503,7 @@ const ListaCitas = () => {
         </div>
       )}
     </div>
+    </MainLayout>
   );
 };
 

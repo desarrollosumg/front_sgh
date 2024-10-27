@@ -3,11 +3,13 @@ import Citas from "../components/Citas";
 import Doctores from "../components/Doctores";
 import { useNavigate } from "react-router-dom";
 import { ArrowBigLeft} from "lucide-react";
+import { MainLayout } from "../components/Layout/MainLayout";
 
 function Cita() {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const navigate = useNavigate();
   return (
+    <MainLayout>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
       <main className="flex-grow container mx-auto px-4 py-8">
         <h1 className="text-4xl font-bold text-center text-black mb-8">
@@ -26,6 +28,7 @@ function Cita() {
         </div>
       </main>
     </div>
+    </MainLayout>
   );
 }
 

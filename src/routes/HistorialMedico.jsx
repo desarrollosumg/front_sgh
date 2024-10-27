@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Search, Calendar, User, Stethoscope, FileText } from 'lucide-react';
+import { MainLayout } from "../components/Layout/MainLayout";
 
 const HistorialMedico = () => {
   const [doctores, setDoctores] = useState([]);
@@ -34,8 +35,7 @@ const HistorialMedico = () => {
   const handleSearch = async (e) => {
     e.preventDefault();
 
-    // Validación del DPI
-    const dpiRegex = /^\d{13}$/; // Expresión regular para validar 13 dígitos numéricos
+    const dpiRegex = /^\d{13}$/;
     if (!dpiRegex.test(patientId)) {
         setError('El DPI debe contener solo números y debe tener exactamente 13 dígitos.');
         setSearchedPatient(null);
@@ -68,6 +68,7 @@ const HistorialMedico = () => {
 };
 
   return (
+    <MainLayout>
     <div className="container mx-auto px-4 py-8">
       <div className="bg-white rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-indigo-800 mb-6">Historial Médico</h2>
@@ -151,6 +152,7 @@ const HistorialMedico = () => {
         )}
       </div>
     </div>
+    </MainLayout>
   );
 };
 
