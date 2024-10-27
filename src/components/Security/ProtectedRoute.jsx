@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 
-const isAuthenticated = () => {
+export const isAuthenticated = () => {
   const user = localStorage.getItem("userId");
   const tokenExpiration = localStorage.getItem("expiracionSesion");
 
@@ -9,10 +9,21 @@ const isAuthenticated = () => {
   return user && tokenExpiration && currentTime < parseInt(tokenExpiration, 10);
 };
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ moduleId, children }) => {
   const isAuth = isAuthenticated();
+  const modules = JSON.parse(localStorage.getItem("modulos") || "[]");
+  
+  const availableModule = modules.find((module) => module.id == moduleId);
 
-  return isAuth ? children : <Navigate to="/" replace />;
+  if (availableModule || moduleId === 0) {
+    return isAuth ? children : <Navigate to="/" replace />;
+  } else {
+    return isAuth ? (
+      <Navigate to="/home" replace />
+    ) : (
+      <Navigate to="/" replace />
+    );
+  }
 };
 
 export default ProtectedRoute;

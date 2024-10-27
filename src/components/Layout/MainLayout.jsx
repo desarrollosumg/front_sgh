@@ -11,61 +11,40 @@ import { IoCalendarNumberSharp } from "react-icons/io5";
 import { FaHeadSideCough } from "react-icons/fa";
 
 export const MainLayout = ({ children }) => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [usuario, setUsuario] = useState('');
-  const navigate = useNavigate();
+  const [modules, setModules] = useState([]);
+
+  const IconComponent = {
+    usuarios: <FaUser className="w-6 h-6" />,
+    pacientes: <FaHeadSideCough className="w-6 h-6" />,
+    historialMedico: <BsClipboardPlus className='w-6 h-6' />,
+    personalMedico: <FaUserDoctor className='w-6 h-6' />,
+    citas: <IoCalendarNumberSharp className='w-6 h-6' />,
+    bitacora: <GiNotebook className='w-6 h-6' />,
+    cerrarSesion: <CiLogout className="w-6 h-6" />
+  };
 
   useEffect(() => {
     const user = localStorage.getItem('nombre_usuario');
+    const modulos = JSON.parse(localStorage.getItem('modulos') || "[]");
+    
     if (user) {
       setUsuario(user);
     }
-  }, []);
-
-  const modules = [
-    {
-      id: 1,
-      icon: <FaUser className="w-6 h-6" />,
-      slug: "/usuarios",
-      name: "Usuarios"
-    },
-    {
-      id: 2,
-      icon: <FaHeadSideCough className="w-6 h-6" />,
-      slug: "/paciente",
-      name: "Pacientes"
-    },
-    {
-      id: 3,
-      icon: <BsClipboardPlus className='w-6 h-6' />,
-      slug: "/historialMedico",
-      name: "Historial Médico"
-    },
-    {
-      id: 4,
-      icon: <FaUserDoctor className='w-6 h-6' />,
-      slug: "/PersonalMedico",
-      name: "Personal Médico"
-    },
-    {
-      id: 5,
-      icon: <IoCalendarNumberSharp className='w-6 h-6' />,
-      slug: "/citas",
-      name: "Citas"
-    },
-    {
-      id: 6,
-      icon: <GiNotebook className='w-6 h-6' />,
-      slug: "/bitacora",
-      name: "Bitácora"
-    },
-    {
-      id: 7,
-      icon: <CiLogout className="w-6 h-6" />,
-      slug: "/cerrar_sesion",
-      name: "Cerrar Sesión"
+    if(modules){
+      setModules(modulos.map(modulo => {
+        const icon = IconComponent[modulo.icono];
+        return {
+          id: modulo.id,
+          icon: icon,
+          slug: modulo.ruta,
+          name: modulo.nombre
+        }
+      }));
     }
-  ];
+  }, []);
 
   return (
     <div className="w-screen h-screen flex">
@@ -76,7 +55,7 @@ export const MainLayout = ({ children }) => {
             onClick={() => setIsOpen(!isOpen)}
             className="hover:bg-[#6482AD]"
           >
-            {isOpen ? <FaChevronLeft /> : <FaChevronRight />}
+            {isOpen ? <FaChevronLeft onClick={() => navigate("/home")}/> : <FaChevronRight />}
           </button>
           <hr className="my-4 border-gray-300" />
         </div>

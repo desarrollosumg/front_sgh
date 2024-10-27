@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaUser } from "react-icons/fa6";
 import { TbPasswordUser } from "react-icons/tb";
 import { IoEye, IoEyeOff } from "react-icons/io5";
@@ -6,6 +6,7 @@ import { notification } from "antd";
 import axios from "axios";
 import bcrypt from "bcryptjs";
 import { useNavigate } from "react-router-dom";
+import { isAuthenticated } from "../components/Security/ProtectedRoute";
 
 //--------------------------------------------------------------------------------------------------------//
 /**
@@ -25,6 +26,12 @@ const Home = () => {
   const [showPasword, setShowPassword] = useState(false);
   const baseApiUrl = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if(isAuthenticated()){
+      navigate("/home");
+    };
+  }, []);
 
   const handleGetUser = async () => {
     try {
@@ -101,7 +108,7 @@ const Home = () => {
       localStorage.setItem("userId", userInfo.id);
       localStorage.setItem("nombre_usuario", userInfo.nombre_usuario);
       localStorage.setItem("expiracionSesion", tiempoExpiracion);
-      localStorage.setItem("modulos", moduleApprovedList);
+      localStorage.setItem("modulos", JSON.stringify(moduleApprovedList));
 
       //registramos el inciio de sesión
       const date = new Date();
@@ -116,7 +123,7 @@ const Home = () => {
       const sessionResponse = await axios.post(`${baseApiUrl}/sesion`, loginBody);
       localStorage.setItem("session", sessionResponse.data.id);
 
-      navigate(`/citas`);
+      navigate(`/home`);
     } catch (error) {
       console.error("Error al obtener el usuario:", error);
       api.error({
