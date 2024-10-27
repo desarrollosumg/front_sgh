@@ -8,7 +8,7 @@ import { MdDisabledByDefault } from "react-icons/md";
 import { Search } from "lucide-react";
 
 const User = () => {
-  const BaseAPiUrl = process.env.REACT_APP_API_BASE_URL;
+  const baseApiUrl = process.env.REACT_APP_API_BASE_URL;
   const [searchText, setSearchText] = useState("");
   const [userList, setUserList] = useState([]);
   const [filteredUserList, setFilteredUserList] = useState([]);
@@ -18,8 +18,8 @@ const User = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userListResponse = await axios.get(`${BaseAPiUrl}/usuario`);
-        const roleListResponse = await axios.get(`${BaseAPiUrl}/listarRol`);
+        const userListResponse = await axios.get(`${baseApiUrl}/usuario`);
+        const roleListResponse = await axios.get(`${baseApiUrl}/listarRol`);
 
         const roleList = roleListResponse.data || [];
 
@@ -55,23 +55,27 @@ const User = () => {
         fecha_modificacion: dateGt,
       };
 
-      await axios.put(`${BaseAPiUrl}/usuario`, updateUser);
+      await axios.put(`${baseApiUrl}/usuario`, updateUser);
       setUserList((prev) =>
         prev.map((u) => (u.id === user.id ? updateUser : u))
       );
-      await Swal.fire(
-        "Éxito",
-        "El estado del usuario ha sido actualizado",
-        "success"
-      );
+      await Swal.fire({
+        icon: "success",
+        title: "¡Perfecto!",
+        text: "El usuario ha sido desactivado exitosamente.",
+        showConfirmButton: false,
+        timer: 3000
+      })
       window.location.reload();
     } catch (error) {
       console.error("Error al actualizar el estado del usuario:", error);
-      Swal.fire(
-        "Error",
-        "No se pudo actualizar el estado del usuario",
-        "error"
-      );
+      Swal.fire({
+        icon: "error",
+        title: "¡Error!",
+        text: "El usuario no ha sido desactivado exitosamente.",
+        showConfirmButton: false,
+        timer: 3000
+      })
     }
   };
 
@@ -173,7 +177,9 @@ const User = () => {
               </tr>
             ))}
             {filteredUserList.length == 0 && (
-              <p>No se encontraron datos...</p>
+              <tr>
+                <td><p>No se encontraron datos...</p></td>
+              </tr>
             )}
           </tbody>
         </table>

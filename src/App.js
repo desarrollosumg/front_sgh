@@ -1,8 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import User from "./routes/User";
-import CreateUser from "./routes/CreateUser";
-import EditUser from "./routes/EditUser";
+import CreateUser from "./routes/CrearUsuario";
 import Cita from "./routes/Cita";
 import ListaCitas from "./routes/ListaCitas";
 import Home from "./routes/login";
@@ -15,6 +14,7 @@ import EditarPaciente from "./routes/EditarPaciente";
 import Bitacora from "./routes/bitacora";
 import HistorialMedico from "./routes/HistorialMedico";
 import ProtectedRoute from "./components/Security/ProtectedRoute";
+import EditarUsuario from "./routes/EditarUsario";
 
 function App() {
   return (
@@ -23,7 +23,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/usuarios" element={<ProtectedRoute><User /></ProtectedRoute>} />
         <Route path="/crear_usuario" element={<ProtectedRoute><CreateUser /></ProtectedRoute>} />
-        <Route path="/editar_usarios/:id" element={<ProtectedRoute><EditUser /></ProtectedRoute>} />
+        <Route path="/editar_usuario/:id" element={<ProtectedRoute><EditUser /></ProtectedRoute>} />
         <Route path="/cita" element={<ProtectedRoute><Cita /></ProtectedRoute>} />
         <Route path="/citas" element={<ProtectedRoute><ListaCitas/></ProtectedRoute>} />
         <Route path="/paciente" element={<ProtectedRoute><Paciente/></ProtectedRoute>} />

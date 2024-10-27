@@ -23,16 +23,16 @@ const Home = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPasword, setShowPassword] = useState(false);
-  const BaseAPiUrl = process.env.REACT_APP_API_BASE_URL;
+  const baseApiUrl = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
 
   const handleGetUser = async () => {
     try {
       // Listamos el usuario segun correo
       const userInfoResponse = await axios.get(
-        `${BaseAPiUrl}/usuario/obtener?correo=${email}`
+        `${baseApiUrl}/usuario/obtener?correo=${email}`
       );
-      const userInfo = userInfoResponse.data || {};
+      const userInfo = userInfoResponse.data;
 
       const isValidPassword = validatePassword(password, userInfo?.clave || "");
 
@@ -44,19 +44,63 @@ const Home = () => {
         return;
       }
 
-      if(userInfo.activo === 0){
+      if (userInfo.activo === 0) {
         api.warning({
           message: "El usuario no se encuentra activo.",
-          description: ""
+          description: "",
         });
         return;
       }
 
+      //obtenemos los modulos existentes
+      const moduleListResponse = await axios.get(`${baseApiUrl}/modulo`);
+      const moduleList = moduleListResponse.data || [];
+
+      //en caso de ser SA, se listan todos los modulos
+      let moduleApprovedList = [];
+
+      if (userInfo.id === 1) {
+        moduleApprovedList = moduleList.map((module) => {
+          return {
+            id: module.id,
+            nombre: module.nombre,
+            ruta: module.ruta,
+            icono: module.icono,
+          };
+        });
+      } else {
+        //Verificamos a que modulos tienen permiso
+        const permissionListResponse = await axios.get(`${baseApiUrl}/permiso`);
+
+        const permissionList =
+          permissionListResponse.data.filter(
+            (permission) =>
+              permission.rol_id === userInfo.rol_id &&
+              permission.disponible === "1"
+          ) || [];
+
+        const moduleIdsSet = new Set(
+          permissionList.map((permission) => permission.modulo_id)
+        );
+
+        moduleApprovedList = moduleList
+          .filter((module) => moduleIdsSet.has(module.id))
+          .map((module) => {
+            return {
+              id: module.id,
+              nombre: module.nombre,
+              ruta: module.ruta,
+              icono: module.icono,
+            };
+          });
+      }
+      
       localStorage.setItem("userId", userInfo.id);
       localStorage.setItem("nombre_usuario", userInfo.nombre_usuario);
       // Guardar fecha de expiración de la sesión
       const tiempoExpiracion = new Date().getTime() + 8 * 60 * 60 * 1000;
       localStorage.setItem("expiracionSesion", tiempoExpiracion);
+      localStorage.setItem("modulos", moduleApprovedList);
 
       navigate(`/cita`);
     } catch (error) {

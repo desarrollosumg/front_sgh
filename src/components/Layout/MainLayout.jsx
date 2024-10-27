@@ -11,7 +11,7 @@ import { IoCalendarNumberSharp } from "react-icons/io5";
 import { FaHeadSideCough } from "react-icons/fa";
 
 export const MainLayout = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [usuario, setUsuario] = useState('');
   const navigate = useNavigate();
 
