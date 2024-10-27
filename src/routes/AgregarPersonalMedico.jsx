@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { MainLayout } from "../components/Layout/MainLayout";
 
 const InsertarPersonalMedico = () => {
   const [formData, setFormData] = useState({
@@ -141,6 +142,7 @@ const InsertarPersonalMedico = () => {
 };
 
   return (
+    <MainLayout>
     <div style={styles.container}>
       <h2 style={styles.title}>Insertar Personal Médico</h2>
       <form onSubmit={(e) => { e.preventDefault(); insertarPersonalMedico(); }} style={styles.form}>
@@ -293,6 +295,7 @@ const InsertarPersonalMedico = () => {
         <button style={styles.buttonRed} onClick={handleRedirect}> Cerrar</button>
       </form>
     </div>
+    </MainLayout>
   );
 };
 

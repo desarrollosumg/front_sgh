@@ -2,7 +2,6 @@ import { useState, useEffect  } from 'react';
 import { FaUser } from "react-icons/fa6";
 import { Tooltip } from "react-tooltip";
 import { Link } from "react-router-dom";
-import { FaUserTie } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { GiNotebook } from "react-icons/gi";
@@ -38,7 +37,7 @@ export const MainLayout = ({ children }) => {
     {
       id: 3,
       icon: <BsClipboardPlus className='w-6 h-6' />,
-      slug: "",
+      slug: "/historialMedico",
       name: "Historial Médico"
     },
     {
@@ -50,7 +49,7 @@ export const MainLayout = ({ children }) => {
     {
       id: 5,
       icon: <IoCalendarNumberSharp className='w-6 h-6' />,
-      slug: "/cita",
+      slug: "/citas",
       name: "Citas"
     },
     {

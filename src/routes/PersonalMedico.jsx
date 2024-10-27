@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import { MainLayout } from "../components/Layout/MainLayout";
 
 const PersonalMedico = () => {
     const [personalMedico, setPersonalMedico] = useState([]);
@@ -67,6 +67,7 @@ const PersonalMedico = () => {
       };
 
     return (
+        <MainLayout>
         <div className="w-full h-full">
             <h1 style={{
                 textAlign: "center",
@@ -143,6 +144,7 @@ const PersonalMedico = () => {
                 </table>
             )}
         </div>
+        </MainLayout>
     );
 };
 
