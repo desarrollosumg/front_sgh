@@ -1,18 +1,19 @@
-import { useState, useEffect  } from 'react';
+import { useState, useEffect } from 'react';
 import { FaUser } from "react-icons/fa6";
 import { Tooltip } from "react-tooltip";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiLogout } from "react-icons/ci";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { GiNotebook } from "react-icons/gi";
 import { FaUserDoctor } from "react-icons/fa6";
 import { BsClipboardPlus } from "react-icons/bs";
-import { IoCalendarNumberSharp } from "react-icons/io5"; 
+import { IoCalendarNumberSharp } from "react-icons/io5";
 import { FaHeadSideCough } from "react-icons/fa";
 
 export const MainLayout = ({ children }) => {
   const [isOpen, setIsOpen] = useState(true);
   const [usuario, setUsuario] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const user = localStorage.getItem('nombre_usuario');
@@ -20,6 +21,12 @@ export const MainLayout = ({ children }) => {
       setUsuario(user);
     }
   }, []);
+
+  const handleLogout = () => {
+    localStorage.clear(); // Limpia el localStorage
+    setUsuario(''); // Limpia el estado del usuario
+    navigate('/'); // Redirige a la página de inicio
+  };
 
   const modules = [
     {
@@ -80,21 +87,31 @@ export const MainLayout = ({ children }) => {
           <hr className="my-4 border-gray-300" />
         </div>
         {modules.map(module => (
-          <Link
-            key={module.id}
-            to={module.slug}
-          >
-            <div
-              className={`w-full flex items-center py-3 transition-all duration-300 ${isOpen ? 'justify-start ml-2' : 'justify-center'}`}
+          module.slug === '/' ? (
+            <button
+              key={module.id}
+              onClick={handleLogout}
+              className={`w-full flex items-center py-3 transition-all duration-300 ${isOpen ? 'justify-start ml-2' : 'justify-center'} text-white`}
               data-tooltip-id={`module_${module.id}`}
               data-tooltip-content={module.name}
             >
               {module.icon}
-              {isOpen && <span className="ml-2 text-white">{module.name}</span>}
-            </div>
-            <Tooltip id={`module_${module.id}`} />
-          </Link>
+              {isOpen && <span className="ml-2">{module.name}</span>}
+            </button>
+          ) : (
+            <Link
+              key={module.id}
+              to={module.slug}
+              className={`w-full flex items-center py-3 transition-all duration-300 ${isOpen ? 'justify-start ml-2' : 'justify-center'} text-white`}
+              data-tooltip-id={`module_${module.id}`}
+              data-tooltip-content={module.name}
+            >
+              {module.icon}
+              {isOpen && <span className="ml-2">{module.name}</span>}
+            </Link>
+          )
         ))}
+        <Tooltip />
       </div>
       <div className="flex-1 h-full overflow-y-auto">
         {children}

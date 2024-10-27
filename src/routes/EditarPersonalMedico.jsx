@@ -120,145 +120,147 @@ const EditarPersonalMedico = () => {
     }
 
     return (
-        <div style={styles.container}>
-            <h1 style={styles.title}>Editar Personal Médico</h1>
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <div style={styles.columnsContainer}>
-                    <div style={styles.column}>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Nombre:</label>
-                            <input
-                                type="text"
-                                name="nombre"
-                                value={medico.nombre}
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            />
+        <MainLayout>
+            <div style={styles.container}>
+                <h1 style={styles.title}>Editar Personal Médico</h1>
+                <form onSubmit={handleSubmit} style={styles.form}>
+                    <div style={styles.columnsContainer}>
+                        <div style={styles.column}>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Nombre:</label>
+                                <input
+                                    type="text"
+                                    name="nombre"
+                                    value={medico.nombre}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                />
+                            </div>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Apellido:</label>
+                                <input
+                                    type="text"
+                                    name="apellido"
+                                    value={medico.apellido}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                />
+                            </div>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Fecha de Nacimiento:</label>
+                                <input
+                                    type="datetime-local"
+                                    name="fechaNacimiento"
+                                    value={new Date(medico.fechaNacimiento).toISOString().slice(0, 16)}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                />
+                            </div>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Género:</label>
+                                <select
+                                    name="genero"
+                                    value={medico.genero}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                >
+                                    <option value="M">Masculino</option>
+                                    <option value="F">Femenino</option>
+                                </select>
+                            </div>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Teléfono:</label>
+                                <input
+                                    type="text"
+                                    name="telefono"
+                                    value={medico.telefono}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                />
+                            </div>
                         </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Apellido:</label>
-                            <input
-                                type="text"
-                                name="apellido"
-                                value={medico.apellido}
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            />
-                        </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Fecha de Nacimiento:</label>
-                            <input
-                                type="datetime-local"
-                                name="fechaNacimiento"
-                                value={new Date(medico.fechaNacimiento).toISOString().slice(0, 16)}
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            />
-                        </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Género:</label>
-                            <select
-                                name="genero"
-                                value={medico.genero}
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            >
-                                <option value="M">Masculino</option>
-                                <option value="F">Femenino</option>
-                            </select>
-                        </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Teléfono:</label>
-                            <input
-                                type="text"
-                                name="telefono"
-                                value={medico.telefono}
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            />
+                        <div style={styles.column}>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Correo:</label>
+                                <input
+                                    type="email"
+                                    name="correo"
+                                    value={medico.correo}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                />
+                            </div>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Fecha de Contratación:</label>
+                                <input
+                                    type="datetime-local"
+                                    name="fechaContratacion"
+                                    value={new Date(medico.fechaContratacion).toISOString().slice(0, 16)}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                />
+                            </div>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Departamento:</label>
+                                <select
+                                    name="departamentoId"
+                                    value={medico.departamentoId} // Cambiado de formData a medico
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                >
+                                    <option value="">Selecciona un Departamento</option>
+                                    {departamentos.map(departamento => (
+                                        <option key={departamento.id} value={departamento.id}>
+                                            {departamento.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Especialidad:</label>
+                                <select
+                                    name="especialidadId"
+                                    value={medico.especialidadId} // Cambiado de formData a medico
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                >
+                                    <option value="">Selecciona una Especialidad</option>
+                                    {especialidades.map(especialidad => (
+                                        <option key={especialidad.id} value={especialidad.id}>
+                                            {especialidad.nombre}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>Estado:</label>
+                                <select
+                                    name="estado"
+                                    value={medico.estado}
+                                    onChange={handleChange}
+                                    style={styles.input}
+                                    required
+                                >
+                                    <option value={1}>Activo</option>
+                                    <option value={0}>Inactivo</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                    <div style={styles.column}>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Correo:</label>
-                            <input
-                                type="email"
-                                name="correo"
-                                value={medico.correo}
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            />
-                        </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Fecha de Contratación:</label>
-                            <input
-                                type="datetime-local"
-                                name="fechaContratacion"
-                                value={new Date(medico.fechaContratacion).toISOString().slice(0, 16)}
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            />
-                        </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Departamento:</label>
-                            <select
-                                name="departamentoId"
-                                value={medico.departamentoId} // Cambiado de formData a medico
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            >
-                                <option value="">Selecciona un Departamento</option>
-                                {departamentos.map(departamento => (
-                                    <option key={departamento.id} value={departamento.id}>
-                                        {departamento.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Especialidad:</label>
-                            <select
-                                name="especialidadId"
-                                value={medico.especialidadId} // Cambiado de formData a medico
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            >
-                                <option value="">Selecciona una Especialidad</option>
-                                {especialidades.map(especialidad => (
-                                    <option key={especialidad.id} value={especialidad.id}>
-                                        {especialidad.nombre}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div style={styles.formGroup}>
-                            <label style={styles.label}>Estado:</label>
-                            <select
-                                name="estado"
-                                value={medico.estado}
-                                onChange={handleChange}
-                                style={styles.input}
-                                required
-                            >
-                                <option value={1}>Activo</option>
-                                <option value={0}>Inactivo</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <button type="submit" style={styles.button}>Guardar Cambios</button>
-                <button type="button" style={styles.buttonRed} onClick={handleRedirect}>Cerrar</button>
-            </form>
-        </div>
+                    <button type="submit" style={styles.button}>Guardar Cambios</button>
+                    <button type="button" style={styles.buttonRed} onClick={handleRedirect}>Cerrar</button>
+                </form>
+            </div>
+        </MainLayout>
     );
 };
 
