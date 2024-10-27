@@ -29,8 +29,6 @@ const Citas = ({ selectedDoctor }) => {
 
   const handleDPIChange = (e) => {
     const dpi = e.target.value;
-
-    // Verificar que el valor solo tenga hasta 13 dígitos numéricos
     if (/^\d{0,13}$/.test(dpi)) {
       setFormData({ ...formData, dpi });
 

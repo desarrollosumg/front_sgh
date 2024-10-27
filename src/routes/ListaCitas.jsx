@@ -10,25 +10,31 @@ const ListaCitas = () => {
   const [pacientes, setPacientes] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editCita, setEditCita] = useState(null);
+  const [accionCita, setAccionCita] = useState("");
+  const [isCompleteModalOpen, setIsCompleteModalOpen] = useState(false);
+  const [tratamiento, setTratamiento] = useState("");
+  const [notas, setNotas] = useState("");
   const url = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
-  const [usuarioId, setUsuarioId]= useState();
+  const [usuarioId, setUsuarioId] = useState();
 
   const getStatusColor = (status) => {
-    if (!status) return "bg-gray-100 text-gray-800"; // Manejo de status undefined
+    if (!status) return "bg-gray-100 text-gray-800";
 
     switch (status.toLowerCase()) {
       case "confirmada":
         return "bg-green-100 text-green-800";
       case "cancelada":
         return "bg-red-100 text-red-800";
+      case "atendida":
+        return "bg-blue-500 ";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
   useEffect(() => {
-    setUsuarioId(localStorage.getItem(`userId`))
+    setUsuarioId(localStorage.getItem(`userId`));
     const fetchData = async () => {
       try {
         const [doctoresResponse, citasResponse, pacientesResponse] =
@@ -72,32 +78,6 @@ const ListaCitas = () => {
     return doctor ? doctor.nombre + " " + doctor.apellido : "Desconocido";
   };
 
-  const cancelarCita = async (cita) => {
-    const result = await Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¿Quieres cancelar esta cita?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, cancelar",
-      cancelButtonText: "No, mantener",
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const updatedCita = { ...cita, estado: "Cancelada" };
-        const response = await axios.put(`${url}/citas/cancelar`, updatedCita);
-        setCitas((prevCitas) =>
-          prevCitas.map((item) => (item.id === cita.id ? response.data : item))
-        );
-
-        Swal.fire("Cancelada", "La cita ha sido cancelada.", "success");
-      } catch (error) {
-        console.error("Error cancelando la cita:", error);
-        Swal.fire("Error", "Hubo un problema al cancelar la cita.", "error");
-      }
-    }
-  };
-
   const abrirModalEditar = (cita) => {
     const formattedDate = new Date(cita.fecha_cita).toISOString().split("T")[0];
     setEditCita({ ...cita, fecha_cita: formattedDate });
@@ -107,43 +87,145 @@ const ListaCitas = () => {
   const manejarEdicionCita = async () => {
     try {
       const dateO = new Date(editCita.fecha_cita);
-      const response = await axios.put(`${url}/citas`, {
+      const updatedCita = {
         ...editCita,
         fecha_cita: new Date(dateO.getTime() + 6 * 60 * 60 * 1000),
         usuario_modificacion: usuarioId,
         fecha_modificacion: new Date(dateO.getTime() + 6 * 60 * 60 * 1000),
-      });
-      setCitas((prevCitas) =>
-        prevCitas.map((item) =>
-          item.id === editCita.id ? response.data : item
-        )
-      );
-      await registrarBitacora();
-      Swal.fire("Actualizada", "La cita ha sido actualizada.", "success");
+      };
+
+      if (accionCita === "cancelar") {
+        const result = await Swal.fire({
+          title: "¿Estás seguro?",
+          text: "¿Quieres cancelar esta cita?",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonText: "Sí, cancelar",
+          cancelButtonText: "No, mantener",
+        });
+
+        if (result.isConfirmed) {
+          updatedCita.estado = "Cancelada";
+          const response = await axios.put(
+            `${url}/citas/cancelar`,
+            updatedCita
+          );
+          setCitas((prevCitas) =>
+            prevCitas.map((item) =>
+              item.id === editCita.id ? response.data : item
+            )
+          );
+          Swal.fire("Cancelada", "La cita ha sido cancelada.", "success");
+        } else {
+          return;
+        }
+      } else if (accionCita === "terminar") {
+        setIsCompleteModalOpen(true);
+        return;
+      } else {
+        const response = await axios.put(`${url}/citas`, updatedCita);
+        setCitas((prevCitas) =>
+          prevCitas.map((item) =>
+            item.id === editCita.id ? response.data : item
+          )
+        );
+        await registrarBitacora();
+        Swal.fire("Actualizada", "La cita ha sido actualizada.", "success");
+      }
+
       setIsModalOpen(false);
       setEditCita(null);
+      setAccionCita("");
     } catch (error) {
-      console.error("Error actualizando la cita:", error);
-      Swal.fire("Error", "Hubo un problema al actualizar la cita.", "error");
+      console.error("Error al procesar la cita:", error);
+      Swal.fire("Error", "Hubo un problema al procesar la cita.", "error");
     }
   };
 
   const registrarBitacora = async () => {
     const fechaActual = new Date().toISOString();
     const bitacoraData = {
-        accion: "UPDATE",
-        descripcion: "Se actualizo cita",
-        modulo: 5,
-        usuario: usuarioId,
-        fecha: fechaActual
+      accion: "UPDATE",
+      descripcion: "Se actualizo cita",
+      modulo: 5,
+      usuario: usuarioId,
+      fecha: fechaActual,
     };
 
     try {
-        await axios.post(`${url}/bitacora`, bitacoraData);
+      await axios.post(`${url}/bitacora`, bitacoraData);
     } catch (error) {
-        console.error('Error al registrar en bitácora', error);
+      console.error("Error al registrar en bitácora", error);
     }
-};
+  };
+
+  const registrarBitacorah = async () => {
+    const fechaActual = new Date().toISOString();
+    const bitacoraData = {
+      accion: "INSERT",
+      descripcion: "Se ingreso un nuevo registro en historial médico",
+      modulo: 3,
+      usuario: usuarioId,
+      fecha: fechaActual,
+    };
+
+    try {
+      await axios.post(`${url}/bitacora`, bitacoraData);
+    } catch (error) {
+      console.error("Error al registrar en bitácora", error);
+    }
+  };
+
+  const manejarTerminarCita = async () => {
+    try {
+      const fechaActual = new Date();
+      const dateO = new Date(editCita.fecha_cita);
+      const historialMedico = {
+        fechaConsulta: new Date(dateO.getTime() + 6 * 60 * 60 * 1000),
+        tratamiento: tratamiento,
+        notas: notas,
+        pacienteId: editCita.paciente_id,
+        personalMedicoId: editCita.personal_medico_id,
+        usuarioCreacion: usuarioId,
+        fechaCreacion: fechaActual,
+        usuarioModificacion: usuarioId,
+        fechaModificacion: fechaActual,
+      };
+
+      await axios.post(`${url}/historial_medico`, historialMedico);
+
+      const citaActualizada = {
+        ...editCita,
+        fecha_cita: new Date(dateO.getTime() + 6 * 60 * 60 * 1000),
+        estado: "Atendida",
+        usuario_modificacion: 1,
+        fecha_modificacion: fechaActual,
+      };
+
+      await axios.put(`${url}/citas`, citaActualizada);
+      setCitas((prevCitas) =>
+        prevCitas.map((item) =>
+          item.id === editCita.id ? { ...item, estado: "Atendida" } : item
+        )
+      );
+      await registrarBitacora();
+      await registrarBitacorah();
+      Swal.fire(
+        "Terminada",
+        "La cita ha sido finalizada y el historial médico ha sido guardado.",
+        "success"
+      );
+
+      setIsModalOpen(false);
+      setIsCompleteModalOpen(false);
+      setEditCita(null);
+      setTratamiento("");
+      setNotas("");
+    } catch (error) {
+      console.error("Error al terminar la cita:", error);
+      Swal.fire("Error", "Hubo un problema al terminar la cita.", "error");
+    }
+  };
 
   return (
     <div className="container mx-auto px-4 py-8 bg-gradient-to-br from-blue-50 to-indigo-100">
@@ -153,7 +235,7 @@ const ListaCitas = () => {
             LISTADO DE CITAS
           </h2>
           <button
-           onClick={() => navigate("/cita")}
+            onClick={() => navigate("/cita")}
             className="absolute top-6 right-6 flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700"
           >
             <CalendarPlus className="h-5 w-5 mr-2" />
@@ -218,39 +300,18 @@ const ListaCitas = () => {
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       onClick={() => abrirModalEditar(appointment)}
-                      disabled={
-                        appointment.estado.toLowerCase() === "cancelada"
-                      }
+                      disabled={["cancelada", "atendida"].includes(
+                        appointment.estado.toLowerCase()
+                      )}
                       className={`relative px-4 py-1 rounded-full ${
-                        appointment.estado.toLowerCase() === "cancelada"
+                        ["cancelada", "atendida"].includes(
+                          appointment.estado.toLowerCase()
+                        )
                           ? "bg-gray-300 border-gray-500 text-gray-600 cursor-not-allowed"
                           : "bg-white border-[#BA0217] text-black hover:bg-gray-50"
-                      }relative px-4 py-1 rounded-full bg-white isolation-auto z-10 border-2 border-blue-500 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full hover:text-white before:-right-full before:hover:right-0 before:rounded-full before:bg-[#032394] before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700 inline-flex items-center justify-center text-xs font-semibold text-black bg-white border border-gray-200 shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none mr-2`}
+                      } relative px-4 py-1 rounded-full bg-white isolation-auto z-10 border-2 border-blue-500 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full hover:text-white before:-right-full before:hover:right-0 before:rounded-full before:bg-[#032394] before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700 inline-flex items-center justify-center text-xs font-semibold text-black bg-white border border-gray-200 shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none mr-2`}
                     >
-                      {appointment.estado.toLowerCase() === "cancelada"
-                        ? "Editar"
-                        : "Editar"}
-   
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        if (appointment.estado.toLowerCase() !== "cancelada") {
-                          cancelarCita(appointment);
-                        }
-                      }}
-                      disabled={
-                        appointment.estado.toLowerCase() === "cancelada"
-                      }
-                      className={`relative px-4 py-1 rounded-full ${
-                        appointment.estado.toLowerCase() === "cancelada"
-                          ? "bg-gray-300 border-gray-500 text-gray-600 cursor-not-allowed"
-                          : "bg-white border-[#BA0217] text-black hover:bg-gray-50"
-                      } isolation-auto z-10 border-2 border-red-700  before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full hover:text-white before:-right-full before:hover:right-0 before:rounded-full before:bg-[#BA0217] before:-z-10 before:aspect-square before:hover:scale-150 overflow-hidden before:hover:duration-700 inline-flex items-center justify-center text-xs font-semibold text-black bg-white border border-gray-200 shadow-sm gap-x-2 hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none`}
-                    >
-                      {appointment.estado.toLowerCase() === "cancelada"
-                        ? "Cancelada"
-                        : "Cancelar"}
+                      Editar
                     </button>
                   </td>
                 </tr>
@@ -325,6 +386,22 @@ const ListaCitas = () => {
                   />
                 </div>
 
+                <div className="mb-4">
+                  <label htmlFor="accion" className="block text-gray-700">
+                    Estado de la cita
+                  </label>
+                  <select
+                    id="accion"
+                    value={accionCita}
+                    onChange={(e) => setAccionCita(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg p-2 mt-1"
+                  >
+                    <option value="">Cita Confirmada</option>
+                    <option value="cancelar">Cancelar Cita</option>
+                    <option value="terminar">Terminar Cita</option>
+                  </select>
+                </div>
+
                 <div className="flex justify-end">
                   <button
                     onClick={manejarEdicionCita}
@@ -338,6 +415,83 @@ const ListaCitas = () => {
                   >
                     Cancelar
                   </button>
+                </div>
+              </div>
+            )}
+
+            {isCompleteModalOpen && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                <div className="bg-white rounded-lg p-6 w-96">
+                  <h3 className="text-lg font-bold mb-4">Terminar Cita</h3>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Fecha de Cita
+                    </label>
+                    <input
+                      type="text"
+                      value={editCita.fecha_cita}
+                      disabled
+                      className="mt-1 block w-full bg-gray-100 text-gray-500 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Paciente
+                    </label>
+                    <input
+                      type="text"
+                      value={getPacienteName(editCita.paciente_id)}
+                      disabled
+                      className="mt-1 block w-full bg-gray-100 text-gray-500 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Doctor
+                    </label>
+                    <input
+                      type="text"
+                      value={getDoctorName(editCita.personal_medico_id)}
+                      disabled
+                      className="mt-1 block w-full bg-gray-100 text-gray-500 border border-gray-300 rounded-md"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Tratamiento
+                    </label>
+                    <textarea
+                      value={tratamiento}
+                      onChange={(e) => setTratamiento(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md"
+                      rows="3"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Notas
+                    </label>
+                    <textarea
+                      value={notas}
+                      onChange={(e) => setNotas(e.target.value)}
+                      className="mt-1 block w-full border border-gray-300 rounded-md"
+                      rows="3"
+                    />
+                  </div>
+                  <div className="flex justify-end">
+                    <button
+                      onClick={manejarTerminarCita}
+                      className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
+                    >
+                      Guardar
+                    </button>
+                    <button
+                      onClick={() => setIsCompleteModalOpen(false)}
+                      className="ml-2 px-4 py-2 bg-gray-200 text-gray-800 rounded-lg"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

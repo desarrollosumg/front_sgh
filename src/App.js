@@ -13,6 +13,7 @@ import Paciente from "./routes/Paciente";
 import CrearPaciente from "./routes/CrearPaciente";
 import EditarPaciente from "./routes/EditarPaciente";
 import Bitacora from "./routes/bitacora";
+import HistorialMedico from "./routes/HistorialMedico";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/paciente" element={<Paciente/>}/>
         <Route path="/nuevopaciente" element={<CrearPaciente/>}/>
         <Route path="/editarpaciente/:id" element={<EditarPaciente/>}/>
+        <Route path="/historialMedico" element={<HistorialMedico/>}/>
         <Route path="/bitacora" element={<Bitacora/>}/>
       </Routes>
     </Router>
