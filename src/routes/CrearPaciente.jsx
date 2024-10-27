@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { MainLayout } from "../components/Layout/MainLayout";
 
 export const CrearPaciente = () => {
     const url = process.env.REACT_APP_API_BASE_URL;
@@ -148,45 +149,47 @@ export const CrearPaciente = () => {
     };
 
     return (
-        <div className="max-w-4xl mx-auto p-10 bg-gray-100 shadow-md rounded-lg">
-            <h2 className="text-4xl font-bold text-center mb-10 text-gray-800">
-                Registrar Nuevo Paciente
-            </h2>
-            <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="space-y-6">
-                    <h3 className="text-2x1 font-semibold text-gray-700">
-                        Datos del Paciente
-                    </h3>
-                    <hr className="my-4 border-gray-300" />
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <input type="text" name="nombre" placeholder="Nombre del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
-                        <input type="text" name="apellido" placeholder="Apellido del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
-                        <select name="genero" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                            <option value={""}>Seleccione genero</option>
-                            <option value={"Femenino"}>Femenino</option>
-                            <option value={"Masculino"}>Masculino</option>
-                        </select>
-                        <input type="text" name="dpi" placeholder="DPI del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
-                        <input type="text" name="correo" placeholder="Correo del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
-                        <input type="text" name="telefono" placeholder="Teléfono del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
-                        <input type="text" name="direccion" placeholder="Dirección del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
-                        <div className="flex space-x-[10px]">
-                            <Link to="/paciente">
-                                <button type="button" className="block p-4 w-full md:w-auto text-[#C45A5A] hover:text-white border border-red-700
-                                hover:bg-[#C45A5A] focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm text-center
-                                dark:bg-[#C45A5A] dark:text-[#C45A5A] dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
-                                    Cancelar
+        <MainLayout>
+            <div className="max-w-4xl mx-auto p-10 bg-gray-100 shadow-md rounded-lg">
+                <h2 className="text-4xl font-bold text-center mb-10 text-gray-800">
+                    Registrar Nuevo Paciente
+                </h2>
+                <form onSubmit={handleSubmit} className="space-y-8">
+                    <div className="space-y-6">
+                        <h3 className="text-2x1 font-semibold text-gray-700">
+                            Datos del Paciente
+                        </h3>
+                        <hr className="my-4 border-gray-300" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <input type="text" name="nombre" placeholder="Nombre del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
+                            <input type="text" name="apellido" placeholder="Apellido del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
+                            <select name="genero" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <option value={""}>Seleccione genero</option>
+                                <option value={"Femenino"}>Femenino</option>
+                                <option value={"Masculino"}>Masculino</option>
+                            </select>
+                            <input type="text" name="dpi" placeholder="DPI del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
+                            <input type="text" name="correo" placeholder="Correo del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
+                            <input type="text" name="telefono" placeholder="Teléfono del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
+                            <input type="text" name="direccion" placeholder="Dirección del paciente" onChange={handlePacienteChange} required className="block p-4 w-full text-gray-800 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"/>
+                            <div className="flex space-x-[10px]">
+                                <Link to="/paciente">
+                                    <button type="button" className="block p-4 w-full md:w-auto text-[#C45A5A] hover:text-white border border-red-700
+                                    hover:bg-[#C45A5A] focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm text-center
+                                    dark:bg-[#C45A5A] dark:text-[#C45A5A] dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900">
+                                        Cancelar
+                                    </button>
+                                </Link>
+                                <button type="submit" className="p-4 w-full md:w-auto bg-[#7FA1C3] text-white font-semibold rounded-lg shadow-md
+                                hover:bg-[#6482AD] focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300">
+                                    Registrar
                                 </button>
-                            </Link>
-                            <button type="submit" className="p-4 w-full md:w-auto bg-[#7FA1C3] text-white font-semibold rounded-lg shadow-md
-                             hover:bg-[#6482AD] focus:outline-none focus:ring-4 focus:ring-blue-300 transition duration-300">
-                                Registrar
-                            </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        </MainLayout>
     );
 };
 

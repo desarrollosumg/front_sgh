@@ -14,26 +14,27 @@ import CrearPaciente from "./routes/CrearPaciente";
 import EditarPaciente from "./routes/EditarPaciente";
 import Bitacora from "./routes/bitacora";
 import HistorialMedico from "./routes/HistorialMedico";
+import ProtectedRoute from "./components/Security/ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/usuarios" element={<User />} />
-        <Route path="/crear_usuario" element={<CreateUser />} />
-        <Route path="/editar_usarios/:id" element={<EditUser />} />
-        <Route path="/cita" element={<Cita />} />
-        <Route path="/citas" element={<ListaCitas/>} />
-        <Route path="/paciente" element={<Paciente />} />
-        <Route path="/PersonalMedico" element={<PersonalMedico />} /> 
-        <Route path="/AgregarPersonalMedico" element={<AgregarPersonalMedico />} /> 
-        <Route path="/EditarPersonalMedico/:id" element={<EditarPersonalMedico />} /> 
-        <Route path="/paciente" element={<Paciente/>}/>
-        <Route path="/nuevopaciente" element={<CrearPaciente/>}/>
-        <Route path="/editarpaciente/:id" element={<EditarPaciente/>}/>
-        <Route path="/historialMedico" element={<HistorialMedico/>}/>
-        <Route path="/bitacora" element={<Bitacora/>}/>
+        <Route path="/usuarios" element={<ProtectedRoute><User /></ProtectedRoute>} />
+        <Route path="/crear_usuario" element={<ProtectedRoute><CreateUser /></ProtectedRoute>} />
+        <Route path="/editar_usarios/:id" element={<ProtectedRoute><EditUser /></ProtectedRoute>} />
+        <Route path="/cita" element={<ProtectedRoute><Cita /></ProtectedRoute>} />
+        <Route path="/citas" element={<ProtectedRoute><ListaCitas/></ProtectedRoute>} />
+        <Route path="/paciente" element={<ProtectedRoute><Paciente/></ProtectedRoute>} />
+        <Route path="/PersonalMedico" element={<ProtectedRoute><PersonalMedico /></ProtectedRoute>} /> 
+        <Route path="/AgregarPersonalMedico" element={<ProtectedRoute><AgregarPersonalMedico /></ProtectedRoute>} /> 
+        <Route path="/EditarPersonalMedico/:id" element={<ProtectedRoute><EditarPersonalMedico /></ProtectedRoute>} /> 
+        <Route path="/paciente" element={<ProtectedRoute><Paciente/></ProtectedRoute>}/>
+        <Route path="/nuevopaciente" element={<ProtectedRoute><CrearPaciente/></ProtectedRoute>}/>
+        <Route path="/editarpaciente/:id" element={<ProtectedRoute><EditarPaciente/></ProtectedRoute>}/>
+        <Route path="/historialMedico" element={<ProtectedRoute><HistorialMedico/></ProtectedRoute>}/>
+        <Route path="/bitacora" element={<ProtectedRoute><Bitacora/></ProtectedRoute>}/>
       </Routes>
     </Router>
   );

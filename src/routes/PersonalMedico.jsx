@@ -111,6 +111,7 @@ const PersonalMedico = () => {
                             <th style={{ padding: "10px", border: "1px solid #ddd", backgroundColor: "#6482AD", color: "white" }}>Departamento</th>
                             <th style={{ padding: "10px", border: "1px solid #ddd", backgroundColor: "#6482AD", color: "white" }}>Especialidad ID</th>
                             <th style={{ padding: "10px", border: "1px solid #ddd", backgroundColor: "#6482AD", color: "white" }}>Estado</th>
+                            <th style={{ padding: "10px", border: "1px solid #ddd", backgroundColor: "#6482AD", color: "white" }}></th>
                         </tr>
                     </thead>
                     <tbody>

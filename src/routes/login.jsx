@@ -54,6 +54,9 @@ const Home = () => {
 
       localStorage.setItem("userId", userInfo.id);
       localStorage.setItem("nombre_usuario", userInfo.nombre_usuario);
+      // Guardar fecha de expiración de la sesión
+      const tiempoExpiracion = new Date().getTime() + 8 * 60 * 60 * 1000;
+      localStorage.setItem("expiracionSesion", tiempoExpiracion);
 
       navigate(`/cita`);
     } catch (error) {
