@@ -15,6 +15,7 @@ import Bitacora from "./routes/bitacora";
 import HistorialMedico from "./routes/HistorialMedico";
 import ProtectedRoute from "./components/Security/ProtectedRoute";
 import EditarUsuario from "./routes/EditarUsario";
+import Logout from "./routes/logout";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <Route path="/editarpaciente/:id" element={<ProtectedRoute><EditarPaciente/></ProtectedRoute>}/>
         <Route path="/historialMedico" element={<ProtectedRoute><HistorialMedico/></ProtectedRoute>}/>
         <Route path="/bitacora" element={<ProtectedRoute><Bitacora/></ProtectedRoute>}/>
+        <Route path="/cerrar_sesion" element={<ProtectedRoute><Logout/></ProtectedRoute>}/>
       </Routes>
     </Router>
   );

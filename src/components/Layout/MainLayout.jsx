@@ -22,12 +22,6 @@ export const MainLayout = ({ children }) => {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.clear(); // Limpia el localStorage
-    setUsuario(''); // Limpia el estado del usuario
-    navigate('/'); // Redirige a la página de inicio
-  };
-
   const modules = [
     {
       id: 1,
@@ -68,7 +62,7 @@ export const MainLayout = ({ children }) => {
     {
       id: 7,
       icon: <CiLogout className="w-6 h-6" />,
-      slug: "/",
+      slug: "/cerrar_sesion",
       name: "Cerrar Sesión"
     }
   ];
@@ -87,29 +81,16 @@ export const MainLayout = ({ children }) => {
           <hr className="my-4 border-gray-300" />
         </div>
         {modules.map(module => (
-          module.slug === '/' ? (
-            <button
-              key={module.id}
-              onClick={handleLogout}
-              className={`w-full flex items-center py-3 transition-all duration-300 ${isOpen ? 'justify-start ml-2' : 'justify-center'} text-white`}
-              data-tooltip-id={`module_${module.id}`}
-              data-tooltip-content={module.name}
-            >
-              {module.icon}
-              {isOpen && <span className="ml-2">{module.name}</span>}
-            </button>
-          ) : (
-            <Link
-              key={module.id}
-              to={module.slug}
-              className={`w-full flex items-center py-3 transition-all duration-300 ${isOpen ? 'justify-start ml-2' : 'justify-center'} text-white`}
-              data-tooltip-id={`module_${module.id}`}
-              data-tooltip-content={module.name}
-            >
-              {module.icon}
-              {isOpen && <span className="ml-2">{module.name}</span>}
-            </Link>
-          )
+          <Link
+            key={module.id}
+            to={module.slug}
+            className={`w-full flex items-center py-3 transition-all duration-300 ${isOpen ? 'justify-start ml-2' : 'justify-center'} text-white`}
+            data-tooltip-id={`module_${module.id}`}
+            data-tooltip-content={module.name}
+          >
+            {module.icon}
+            {isOpen && <span className="ml-2">{module.name}</span>}
+          </Link>
         ))}
         <Tooltip />
       </div>

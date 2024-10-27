@@ -95,12 +95,26 @@ const Home = () => {
           });
       }
       
-      localStorage.setItem("userId", userInfo.id);
-      localStorage.setItem("nombre_usuario", userInfo.nombre_usuario);
       // Guardar fecha de expiración de la sesión
       const tiempoExpiracion = new Date().getTime() + 8 * 60 * 60 * 1000;
+
+      localStorage.setItem("userId", userInfo.id);
+      localStorage.setItem("nombre_usuario", userInfo.nombre_usuario);
       localStorage.setItem("expiracionSesion", tiempoExpiracion);
       localStorage.setItem("modulos", moduleApprovedList);
+
+      //registramos el inciio de sesión
+      const date = new Date();
+
+      const loginBody = {
+        login_time: date.toISOString(),
+        logout_time: null,
+        agente: navigator.userAgent,
+        usuario_id: userInfo.id,
+      };
+
+      const sessionResponse = await axios.post(`${baseApiUrl}/sesion`, loginBody);
+      localStorage.setItem("session", sessionResponse.data.id);
 
       navigate(`/citas`);
     } catch (error) {
