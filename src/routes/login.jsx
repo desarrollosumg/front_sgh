@@ -102,7 +102,7 @@ const Home = () => {
       localStorage.setItem("expiracionSesion", tiempoExpiracion);
       localStorage.setItem("modulos", moduleApprovedList);
 
-      navigate(`/cita`);
+      navigate(`/citas`);
     } catch (error) {
       console.error("Error al obtener el usuario:", error);
       api.error({
